@@ -4,7 +4,7 @@ require_once __DIR__."/function.php";
 
 $record=[];
 
-function quickSortSecondVersion($data,$baseLine,$count=1,$record=[]){
+function quickSort($data,$baseLine,$count=1,$record=[]){
     if($count>100){
         debugEnd($record);
         return [];
@@ -38,13 +38,22 @@ function quickSortSecondVersion($data,$baseLine,$count=1,$record=[]){
     );
     return
         array_merge(
-            quickSortSecondVersion($biggerData,getRandItem($biggerData),$count,$record),
-            quickSortSecondVersion($smallerData,getRandItem($smallerData),$count,$record)
+            quickSort($biggerData,getMiddleItem($biggerData),$count,$record),
+            quickSort($smallerData,getMiddleItem($smallerData),$count,$record)
         );
 }
 
-function getRandItem($array){
-    return $array[rand(0,count($array))];
+/**
+ * 这段代码错误的原因就在于这里，具体情况可以见 debug.txt 中的结果，总的来说，是因为陷入了死循环
+ * @param $array
+ * @return mixed
+ */
+function getMiddleItem($array){
+    return $array[
+        ceil(
+            count($array)/2
+        )
+    ];
 }
 
 // 获取一个随机数组
@@ -52,7 +61,7 @@ $data=range(1,10);
 randArray($data);
 
 // 开始排序
-$result=quickSortSecondVersion($data,getRandItem($data));
+$result=quickSort($data,getMiddleItem($data));
 
 // 输出结果
 print_r($result);
