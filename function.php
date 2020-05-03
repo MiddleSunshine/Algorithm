@@ -28,3 +28,20 @@ function changeArrayData(&$array,$firstIndex,$nextIndex){
     $array[$nextIndex]=$temp;
 }
 
+function debugStart(&$record,$newItem){
+    $record[]=$newItem;
+}
+
+function debugEnd($record,$fileName=''):void {
+    $file=fopen(__DIR__."/".($fileName?$fileName:"debug.txt"),'w');
+    $content="";
+    foreach ($record as $key=>$value){
+        if(is_array($value)){
+            $content.=implode(PHP_EOL,$value);
+        }else{
+            $content.=$value;
+        }
+    }
+    fwrite($file,$content);
+    fclose($file);
+}
