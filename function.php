@@ -45,3 +45,74 @@ function debugEnd($record,$fileName=''):void {
     fwrite($file,$content);
     fclose($file);
 }
+
+/**
+ * 创建地图，双向的
+ * @param $mapAmount
+ * @param float $randLevel
+ * @return array
+ */
+function createMap($mapAmount,$randLevel=RAND_LEVEL_THREE){
+    // 先创建所有人
+    $allPeople=range(1,$mapAmount);
+    // 再来创建他们之间的认识关系，其中有 $randLevel 数量的人互相认识
+    $randAmount=ceil($mapAmount*$randLevel);
+    $friendShipMap=[];
+    for ($count=1;$count<$randAmount;$count++){
+        $oneFriend=rand(1,$mapAmount);
+        $hisFriend=rand(1,$mapAmount);
+        // 两个选出的是同一个值
+        if($oneFriend==$hisFriend){
+            continue;
+        }
+        // 两者构成朋友
+        buildFriendship($friendShipMap,$oneFriend,$hisFriend);
+    }
+    $returnData=[];
+    foreach ($allPeople as $key=>$number){
+        $returnData[$number]=[];
+        if(isset($friendShipMap[$number])){
+            $returnData[$number]=$friendShipMap[$number];
+        }
+    }
+    return $returnData;
+}
+
+/**
+ * 记录友谊关系
+ * @param $friendShipMap array
+ * @param $oneFriend int
+ * @param $hisFriend int
+ * @return bool
+ */
+function buildFriendship(&$friendShipMap,$oneFriend,$hisFriend){
+    if(checkIsFriendShip($friendShipMap,$oneFriend,$hisFriend)){
+        return true;
+    }
+    if(isset($friendShipMap[$oneFriend]) && !in_array($hisFriend,$friendShipMap[$oneFriend])){
+        $friendShipMap[$oneFriend][$hisFriend]=[];
+    }else{
+        $friendShipMap[$oneFriend]=[];
+        $friendShipMap[$oneFriend][$hisFriend]=[];
+    }
+    return buildFriendship($friendShipMap,$hisFriend,$oneFriend);
+}
+
+/**
+ * 检查两个人是否是朋友
+ * @param $friendShipMap array
+ * @param $oneFriend int
+ * @param $hisFriend int
+ * @return bool
+ */
+function checkIsFriendShip($friendShipMap,$oneFriend,$hisFriend){
+    return (
+        isset($friendShipMap[$oneFriend])
+        &&
+        isset($friendShipMap[$hisFriend])
+        &&
+        isset($friendShipMap[$oneFriend][$hisFriend])
+        &&
+        isset($friendShipMap[$hisFriend][$oneFriend])
+    );
+}
