@@ -52,7 +52,7 @@ function debugEnd($record,$fileName=''):void {
  * @param float $randLevel
  * @return array
  */
-function createMap($mapAmount,$randLevel=RAND_LEVEL_THREE){
+function createMap($mapAmount,$randLevel=RAND_LEVEL_THREE):array {
     // 先创建所有人
     $allPeople=range(1,$mapAmount);
     // 再来创建他们之间的认识关系，其中有 $randLevel 数量的人互相认识
@@ -70,6 +70,10 @@ function createMap($mapAmount,$randLevel=RAND_LEVEL_THREE){
     }
     $returnData=[];
     foreach ($allPeople as $key=>$number){
+        // 删除一些人际关系
+        if(rand(1,100)<=($randLevel*100)){
+            continue;
+        }
         $returnData[$number]=[];
         if(isset($friendShipMap[$number])){
             $returnData[$number]=$friendShipMap[$number];
@@ -115,4 +119,15 @@ function checkIsFriendShip($friendShipMap,$oneFriend,$hisFriend){
         &&
         isset($friendShipMap[$hisFriend][$oneFriend])
     );
+}
+
+/**
+ * 获取地图中随机的一个点
+ * @param $map
+ * @return mixed
+ */
+function getMapRandItem($map){
+    $itemArray=array_slice($map,rand(1,count($map)-1)-1,1,true);
+    $arrayKeys=array_keys($itemArray);
+    return $arrayKeys[rand(0,count($arrayKeys)-1)];
 }
