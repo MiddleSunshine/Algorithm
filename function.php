@@ -50,9 +50,10 @@ function debugEnd($record,$fileName=''):void {
  * 创建地图，双向的
  * @param $mapAmount
  * @param float $randLevel
+ * @param bool $isRemoveSomeFriend
  * @return array
  */
-function createMap($mapAmount,$randLevel=RAND_LEVEL_THREE):array {
+function createMap($mapAmount,$randLevel=RAND_LEVEL_THREE,$isRemoveSomeFriend=true):array {
     // 先创建所有人
     $allPeople=range(1,$mapAmount);
     // 再来创建他们之间的认识关系，其中有 $randLevel 数量的人互相认识
@@ -71,8 +72,10 @@ function createMap($mapAmount,$randLevel=RAND_LEVEL_THREE):array {
     $returnData=[];
     foreach ($allPeople as $key=>$number){
         // 删除一些人际关系
-        if(rand(1,100)<=($randLevel*100)){
-            continue;
+        if($isRemoveSomeFriend){
+            if(rand(1,100)<=($randLevel*100)){
+                continue;
+            }
         }
         $returnData[$number]=[];
         if(isset($friendShipMap[$number])){

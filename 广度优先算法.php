@@ -31,5 +31,38 @@ $checkExistFalse=false;
 checkExit(createMap(10),15,$checkExistFalse);
 print ($checkExistFalse ?"代码运行错误":"代码运行正常").PHP_EOL;
 
+/**
+ * @param $map array
+ * @param $searchPerson int
+ * @return bool
+ */
+function getClosetFriend($map,$searchPerson){
+    $searchQueue=new \SplQueue();
+    $searched=[];
+    enqueue($searchQueue,$map);
+    while (!$searchQueue->isEmpty()){
+        $friend=$searchQueue->dequeue();
+        if(!isset($searched[$friend])){
+            if($friend==$searchPerson){
+                print "Success:".$searchPerson;
+                return true;
+            }else{
+                enqueue($searchQueue,$map[$friend]);
+                $searched[$friend]=true;
+            }
+        }
+    }
+}
 
+/**
+ * @param SplQueue $queue
+ * @param array $friends
+ */
+function enqueue(\SplQueue $queue,array $friends){
+    foreach ($friends as $name=>$hisFriends){
+        $queue->enqueue($name);
+    }
+}
 
+$map=createMap(10,RAND_LEVEL_THREE,false);
+getClosetFriend($map,getMapRandItem($map));
