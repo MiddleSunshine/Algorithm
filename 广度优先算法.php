@@ -40,6 +40,7 @@ function getClosetFriend($map,$searchPerson){
     $searchQueue=new \SplQueue();
     $searched=[];
     enqueue($searchQueue,$map);
+    // 重点是这里
     while (!$searchQueue->isEmpty()){
         $friend=$searchQueue->dequeue();
         if(!isset($searched[$friend])){
